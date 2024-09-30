@@ -1,8 +1,11 @@
 package org.example;
 
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.example.misArchivos.AuxiliarClass.RenderToken;
 import org.example.misArchivos.GramaticaBaseVisitor;
 import org.example.misArchivos.GramaticaParser;
+import org.jetbrains.annotations.NotNull;
 
 
 import java.util.*;
@@ -11,9 +14,9 @@ public class MyVisitor extends GramaticaBaseVisitor<Integer> {
     Map<String,Integer> memory=new HashMap<>();
     Vector<RenderToken> tokens = new Vector<>();
 
-    private String error = null;
+    private ArrayList<String> error = new ArrayList<>();
 
-    private String sucess = null;
+    private String sucess;
     @Override public Integer visitPrule(GramaticaParser.PruleContext ctx) { return visitChildren(ctx); }
 
     @Override public Integer visitDeclaraciones(GramaticaParser.DeclaracionesContext ctx) {
@@ -54,51 +57,92 @@ public class MyVisitor extends GramaticaBaseVisitor<Integer> {
 
         GramaticaParser.SegundaContext temp = ctx.segunda(); //Variable auxiliar
         int numHijos = temp.getChildCount();
-
+        //System.out.println(numHijos);
         String valor="";
-        if(numHijos > 1)
-            valor = temp.getChild(1).getText();
 
         if(tipo.equals("boolean")){
             //Verificar que se declaro o se asigno
             if(numHijos > 1){
-                if(valor.compareTo("true")== 0 || valor.compareTo("false")==0){
-                    sucess = "Entrada semantica correcta \t✅✅✅";
-                    //System.out.println("Variable booleana asignada");
-                }else{
-                    error = "Error! Valor incompatible con el tipo de dato \t❌❌❌";
-                    //System.out.println("Error booleano");
+                if(!temp.getText().contains("=")){
+                    recorrerSegundas(temp,tipo);
+                    sucess ="Entrada semantica correcta \t✅✅✅";
+                    System.out.println("Variables booleana declaradas");
+                }else {
+
+                    valor = temp.getChild(1).getText();
+
+                    if (valor.compareTo("true") == 0 || valor.compareTo("false") == 0) {
+                        sucess="Entrada semantica correcta \t✅✅✅";
+
+                        System.out.println("Variable booleana asignada");
+                    } else {
+                        error.add("Error! Valor incompatible con el tipo de dato booleano \t❌❌❌");
+                        System.out.println("Error booleano");
+                    }
                 }
             }else{
-                sucess = "Entrada semantica correcta \t✅✅✅";
-                //System.out.println("Variable booleana declarada");
+                sucess="Entrada semantica correcta \t✅✅✅";
+                System.out.println("Variable booleana declarada");
             }
         }else{//Numerico
             if(tipo.equals("int")){
                 if(numHijos > 1){
-                    if(valor.contains(".") || valor.compareTo("true")==0 || valor.compareTo("false")==0 ){
-                        error = "Error! Valor incompatible con el tipo de dato \t❌❌❌";
-                        //System.out.println("Error int");
+                    if(!temp.getText().contains("=")){
+                        recorrerSegundas(temp,tipo);
+                        sucess="Entrada semantica correcta \t✅✅✅";
+                        System.out.println("Variables enteras declaradas");
                     }else {
-                        sucess = "Entrada semantica correcta \t✅✅✅";
-                        //System.out.println("Variable int asignada");
+
+                        valor = temp.getChild(1).getText();
+                        if (valor.contains(".") || valor.compareTo("true") == 0 || valor.compareTo("false") == 0) {
+                            error.add("Error! Valor incompatible con el tipo de dato entero \t❌❌❌");
+                            System.out.println("Error int");
+                        } else {
+                            sucess="Entrada semantica correcta \t✅✅✅";
+
+                            System.out.println("Variable int asignada");
+                        }
                     }
                 }else{
-                    sucess = "Entrada semantica correcta \t✅✅✅";
-                    //System.out.println("Variable int declarada");
+                    sucess="Entrada semantica correcta \t✅✅✅";
+
+                    System.out.println("Variable int declarada");
                 }
             }else{ //Decimal double / float
+
                 if(numHijos>1){
-                    if(!valor.contains(".") || valor.compareTo("true")==0 || valor.compareTo("false")==0 ){
-                        error = "Error! Valor incompatible con el tipo de dato \t❌❌❌";
-                        //System.out.println("Error float/double");
+                    if(!temp.getText().contains("=")){
+                        recorrerSegundas(temp,tipo);
+                        sucess="Entrada semantica correcta \t✅✅✅";
+                        if(tipo.equals("float"))
+                            System.out.println("Variables float declaradas");
+                        else
+                            System.out.println("Variables double declaradas");
                     }else {
-                        sucess = "Entrada semantica correcta \t✅✅✅";
-                        //System.out.println("Variable float/double asignada");
+
+                        valor = temp.getChild(1).getText();
+
+                        if (!valor.contains(".") || valor.compareTo("true") == 0 || valor.compareTo("false") == 0) {
+                            if(tipo.equals("float"))
+                                error.add("Error! Valor incompatible con el tipo de dato float \t❌❌❌");
+                            else
+                                error.add("Error! Valor incompatible con el tipo de dato double \t❌❌❌");
+
+                            System.out.println("Error float/double");
+                        } else {
+                            sucess="Entrada semantica correcta \t✅✅✅";
+                            if(tipo.equals("float"))
+                                System.out.println("Variable float asignada");
+                            else
+                                System.out.println("Variable double asignada");
+                        }
                     }
                 }else {
-                    sucess = "Entrada semantica correcta \t✅✅✅";
-                    //System.out.println("Variable float/double declarada");
+                    sucess="Entrada semantica correcta \t✅✅✅";
+                    if(tipo.equals("float"))
+                        System.out.println("Variable float declarada");
+                    else
+                        System.out.println("Variable double declarada");
                 }
             }
         }
@@ -142,6 +186,7 @@ public class MyVisitor extends GramaticaBaseVisitor<Integer> {
     @Override public Integer visitCondicional(GramaticaParser.CondicionalContext ctx) {
 
         //Evaluar las condicones
+
         return visitChildren(ctx);
 
     }
@@ -179,13 +224,18 @@ public class MyVisitor extends GramaticaBaseVisitor<Integer> {
 
         //Validar si tienen contenido para su comparacion sino no permitir ser evaluada la condicion
         //nums[0].getValor().isEmpty() || nums[1].getValor().isEmpty()
+        //System.out.println("Llegue a valor\n");
         if(nums[0] == null || nums[1] == null){
-            error ="Utiliza las variables declaradas en la condicion \t❌❌❌";
-            //System.out.println("Utiliza las variables declaradas en la condicion");
+            error.add("Utiliza las variables declaradas en la condicion \t❌❌❌");
+
+            System.out.println("Utiliza las variables declaradas en la condicion");
         }else {
-            if(nums[0].getValor().isEmpty() || nums[1].getValor().isEmpty())
-                error = "Asignale un valor a las variables de la condiciones \t❌❌❌";
-            else {
+            //System.out.println("Entre\n");
+            if (nums[0].getValor().isEmpty() || nums[1].getValor().isEmpty()){
+                error.add("Asignale un valor a las variables de la condiciones \t❌❌❌");
+
+                System.out.println("Asigne un valor a las variables de la condiciones \t❌❌❌");
+            }else {
                 //Validacion de tipo de condicion para poder hacer comparaciones
                 if (pass) { //Los ID de la condicion coinciden con los ID declarados
                     String possNum = "<>==!=";
@@ -194,26 +244,39 @@ public class MyVisitor extends GramaticaBaseVisitor<Integer> {
                     if (possNum.contains(operador)) {
                         //System.out.println("Esperando enteros");
                         if (nums[0].getTipo().compareTo("int") == 0 && nums[1].getTipo().compareTo("int") == 0) {
-                            sucess = "Entrada semantica correcta \t✅✅✅";
-                            //System.out.println("condicion numerica valida");
+                            sucess="Entrada semantica correcta \t✅✅✅";
+
+                            System.out.println("condicion entera valida");
+                        } else if (nums[0].getTipo().compareTo("float") == 0 && nums[1].getTipo().compareTo("float") == 0) {
+                            sucess="Entrada semantica correcta \t✅✅✅";
+
+                            System.out.println("condicion float valida");
+                        }else if (nums[0].getTipo().compareTo("double") == 0 && nums[1].getTipo().compareTo("double") == 0) {
+                            sucess="Entrada semantica correcta \t✅✅✅";
+
+                            System.out.println("condicion double valida");
                         } else {
-                            error = "Condicion invalida! Tipos de datos diferentes \t❌❌❌";
-                            //System.out.println("Condicion invalida! Tipos de datos diferentes");
+                            error.add("Condicion invalida! Tipos de datos diferentes u operador no valido \t❌❌❌");
+
+                            System.out.println("Condicion invalida! Tipos de datos diferentes");
                         }
-                    } else {
-                        //System.out.println("Esperando bool");
+
+                    } else { // Operador || &&
+                        System.out.println("Esperando bool");
                         if (nums[0].getTipo().compareTo("boolean") == 0 && nums[1].getTipo().compareTo("boolean") == 0) {
-                            sucess = "Entrada semantica correcta \t✅✅✅";
-                            //System.out.println("condicion booleana valida");
+                            sucess="Entrada semantica correcta \t✅✅✅";
+
+                            System.out.println("condicion booleana valida");
                         } else {
-                            error = "Condicion invalida! Tipos de datos diferentes \t❌❌❌";
-                            //System.out.println("Condicion invalida! Tipos de datos diferentes");
+                            error.add("Condicion invalida! Tipos de datos diferentes u operador no valido \t❌❌❌");
+                            System.out.println("Condicion invalida! Tipos de datos diferentes");
                         }
                     }
 
                 }
             }
         }
+
         return visitChildren(ctx);
 
 
@@ -227,12 +290,28 @@ public class MyVisitor extends GramaticaBaseVisitor<Integer> {
     @Override public Integer visitContraria(GramaticaParser.ContrariaContext ctx) { return visitChildren(ctx); }
 
 
+    private void recorrerSegundas(@NotNull ParseTree nodo, String tipo){
+        for (int x=0; x<nodo.getChildCount();x++) {
+            if (x != nodo.getChildCount() - 1){
+                TerminalNode aux = (TerminalNode) nodo.getChild(x);
+                if(aux.getSymbol().getType() == 8) {
+                    RenderToken r = new RenderToken(tipo, nodo.getChild(x).getText());
+                    tokens.add(r);
+
+                }
+            }
+            else{
+                recorrerSegundas(nodo.getChild(nodo.getChildCount()-1),tipo);
+            }
+        }
+    }
+
     //Getters Method
     public String getSucess(){
         return this.sucess;
     }
 
-    public String getError(){
+    public ArrayList<String> getError(){
         return  this.error;
     }
 }

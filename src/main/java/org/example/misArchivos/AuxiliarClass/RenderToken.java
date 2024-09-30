@@ -13,6 +13,12 @@ public class RenderToken {
         this.valor = valor;
     }
 
+    public RenderToken(String tipo, String id){
+        this.tipo = tipo;
+        this.id = id;
+        this.valor = "";
+    }
+
     public String getId(){
         return this.id;
     }

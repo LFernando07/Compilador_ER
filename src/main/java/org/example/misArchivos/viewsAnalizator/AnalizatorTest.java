@@ -164,6 +164,7 @@ public class AnalizatorTest extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 output_tokens.setText("");
+                output_Sem.setText("");
                 //Call method testInput
                 testInput();
             }
@@ -260,13 +261,18 @@ public class AnalizatorTest extends JFrame {
                     visitor.visit(tree); // Procesar el árbol
 
                     //Extraer el mensaje semantico de error
-                    if(visitor.getSucess() != null){ //Hay una semantica correcta
-                        output_Sem.setForeground(Color.BLUE);
-                        output_Sem.setText(STR."\{visitor.getSucess()}\n");
-                    }else if(visitor.getError() != null){ //Surgio un error
+
+                    if(!visitor.getError().isEmpty()){
                         output_Sem.setForeground(Color.RED);
-                        output_Sem.setText(STR."\{visitor.getError()}\n");
+                        for(String msg: visitor.getError()){
+                            output_Sem.append(STR."\{msg}\n");
+                        }
+                    }else{
+                        output_Sem.setForeground(Color.BLUE);
+                        output_Sem.append(STR."\{visitor.getSucess()}\n");
+
                     }
+
                 }
 
             }
@@ -290,6 +296,7 @@ public class AnalizatorTest extends JFrame {
         //Limpiar tabla
         tabla = new JTable();
         scroll_tokens.setViewport(null);
+
     }
 
     private void showTokensView(@NotNull CommonTokenStream token){
@@ -308,6 +315,7 @@ public class AnalizatorTest extends JFrame {
         token.fill();
         for(int i =0; i<token.getTokens().size()-1;i++){
             int tipo = token.getTokens().get(i).getType();
+
             String tipo_name= "";
 
             switch (tipo){
