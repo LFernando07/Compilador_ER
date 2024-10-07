@@ -1,4 +1,4 @@
-package org.example.misArchivos.AuxiliarClass;
+package org.example.src.AuxiliarClass;
 
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;

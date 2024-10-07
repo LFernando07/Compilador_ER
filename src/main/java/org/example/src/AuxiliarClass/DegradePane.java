@@ -1,18 +1,14 @@
-package org.example.misArchivos.AuxiliarClass;
+package org.example.src.AuxiliarClass;
 import java.awt.*;
 import javax.swing.*;
 public class DegradePane extends JPanel {
     private Color color1;
     private Color color2;
-
-    public DegradePane(){
-
-    }
+    public DegradePane(){   }// Constructor por defecto
     public DegradePane(Color color1, Color color2){
         this.color1 = color1;
         this.color2 = color2;
     }
-
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

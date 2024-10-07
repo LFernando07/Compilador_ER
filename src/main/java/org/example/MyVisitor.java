@@ -2,7 +2,7 @@ package org.example;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.example.misArchivos.AuxiliarClass.RenderToken;
+import org.example.src.AuxiliarClass.RenderToken;
 import org.example.misArchivos.GramaticaBaseVisitor;
 import org.example.misArchivos.GramaticaParser;
 import org.jetbrains.annotations.NotNull;
@@ -11,9 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class MyVisitor extends GramaticaBaseVisitor<Integer> {
-    Map<String,Integer> memory=new HashMap<>();
-    Vector<RenderToken> tokens = new Vector<>();
-
+    private Vector<RenderToken> tokens = new Vector<>();
     private ArrayList<String> error = new ArrayList<>();
 
     private String sucess;
@@ -109,7 +107,6 @@ public class MyVisitor extends GramaticaBaseVisitor<Integer> {
                     System.out.println("Variable int declarada");
                 }
             }else{ //Decimal double / float
-
                 if(numHijos>1){
                     if(!temp.getText().contains("=")){
                         recorrerSegundas(temp,tipo);
@@ -119,15 +116,12 @@ public class MyVisitor extends GramaticaBaseVisitor<Integer> {
                         else
                             System.out.println("Variables double declaradas");
                     }else {
-
                         valor = temp.getChild(1).getText();
-
                         if (!valor.contains(".") || valor.compareTo("true") == 0 || valor.compareTo("false") == 0) {
                             if(tipo.equals("float"))
                                 error.add("Error! Valor incompatible con el tipo de dato float \t❌❌❌");
                             else
                                 error.add("Error! Valor incompatible con el tipo de dato double \t❌❌❌");
-
                             System.out.println("Error float/double");
                         } else {
                             sucess="Entrada semantica correcta \t✅✅✅";
@@ -223,41 +217,32 @@ public class MyVisitor extends GramaticaBaseVisitor<Integer> {
         }
 
         //Validar si tienen contenido para su comparacion sino no permitir ser evaluada la condicion
-        //nums[0].getValor().isEmpty() || nums[1].getValor().isEmpty()
-        //System.out.println("Llegue a valor\n");
         if(nums[0] == null || nums[1] == null){
             error.add("Utiliza las variables declaradas en la condicion \t❌❌❌");
 
             System.out.println("Utiliza las variables declaradas en la condicion");
         }else {
-            //System.out.println("Entre\n");
             if (nums[0].getValor().isEmpty() || nums[1].getValor().isEmpty()){
                 error.add("Asignale un valor a las variables de la condiciones \t❌❌❌");
-
                 System.out.println("Asigne un valor a las variables de la condiciones \t❌❌❌");
             }else {
                 //Validacion de tipo de condicion para poder hacer comparaciones
                 if (pass) { //Los ID de la condicion coinciden con los ID declarados
                     String possNum = "<>==!=";
-
                     String operador = ctx.OPERADOR().getText();
                     if (possNum.contains(operador)) {
                         //System.out.println("Esperando enteros");
                         if (nums[0].getTipo().compareTo("int") == 0 && nums[1].getTipo().compareTo("int") == 0) {
                             sucess="Entrada semantica correcta \t✅✅✅";
-
                             System.out.println("condicion entera valida");
                         } else if (nums[0].getTipo().compareTo("float") == 0 && nums[1].getTipo().compareTo("float") == 0) {
                             sucess="Entrada semantica correcta \t✅✅✅";
-
                             System.out.println("condicion float valida");
                         }else if (nums[0].getTipo().compareTo("double") == 0 && nums[1].getTipo().compareTo("double") == 0) {
                             sucess="Entrada semantica correcta \t✅✅✅";
-
                             System.out.println("condicion double valida");
                         } else {
-                            error.add("Condicion invalida! Tipos de datos diferentes u operador no valido \t❌❌❌");
-
+                            error.add("Condicion invalida! Tipos de datos diferentes u operador no valido   ❌❌❌");
                             System.out.println("Condicion invalida! Tipos de datos diferentes");
                         }
 
@@ -268,7 +253,7 @@ public class MyVisitor extends GramaticaBaseVisitor<Integer> {
 
                             System.out.println("condicion booleana valida");
                         } else {
-                            error.add("Condicion invalida! Tipos de datos diferentes u operador no valido \t❌❌❌");
+                            error.add("Condicion invalida! Tipos de datos diferentes u operador no valido  ❌❌❌");
                             System.out.println("Condicion invalida! Tipos de datos diferentes");
                         }
                     }
@@ -314,5 +299,6 @@ public class MyVisitor extends GramaticaBaseVisitor<Integer> {
     public ArrayList<String> getError(){
         return  this.error;
     }
+
 }
 

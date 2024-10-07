@@ -1,16 +1,15 @@
-package org.example.misArchivos.viewsAnalizator;
+package org.example.src.viewsAnalizator;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.example.MyVisitor;
-import org.example.misArchivos.AuxiliarClass.CustomErrorListener;
-import org.example.misArchivos.AuxiliarClass.DegradePane;
+import org.example.src.AuxiliarClass.CustomErrorListener;
+import org.example.src.AuxiliarClass.DegradePane;
 import org.example.misArchivos.GramaticaLexer;
 import org.example.misArchivos.GramaticaParser;
 import org.jetbrains.annotations.NotNull;
-
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -42,6 +41,7 @@ public class AnalizatorTest extends JFrame {
         analizer.requestFocus(false);
     }//Constructor base
 
+
     private void initComponents(){
         initPane();
         initLabels();
@@ -49,23 +49,21 @@ public class AnalizatorTest extends JFrame {
         initScrolls();
         initButtons();
         initDecorateComponents();
-
         input.requestFocusInWindow();
     }
 
     private void initPane(){
         plataforma = new DegradePane(new Color(115, 103, 224),new Color(50, 204, 188));
         plataforma.setLayout(null);
-        //plataforma.setBackground(new Color(254, 236, 179));
         plataforma.setSize(600,750);
         add(plataforma);
     }
+
 
     private void initLabels(){
         head = new JLabel("T e s t i n g . . . ");
         head.setSize(plataforma.getWidth(),25);
         head.setHorizontalAlignment(SwingConstants.CENTER);
-        //head.setBorder(BorderFactory.createSoftBevelBorder(1));
         head.setForeground(Color.BLACK);
         head.setFont(new Font("Arial Black",Font.BOLD,20));
         head.setLocation(0,10);
@@ -77,14 +75,12 @@ public class AnalizatorTest extends JFrame {
         head_Lex.setForeground(Color.BLACK);
         head_Lex.setFont(new Font("Arial Black",Font.BOLD,16));
         head_Lex.setLocation(10,60);
-        //head_Lex.setBorder(BorderFactory.createSoftBevelBorder(0));
         plataforma.add(head_Lex);
 
         head_Sin = new JLabel("Analizador sintactico");
         head_Sin.setSize(200,30);
         head_Sin.setForeground(Color.BLACK);
         head_Sin.setFont(new Font("Arial Black",Font.BOLD,16));
-        //head_Sin.setBorder(BorderFactory.createBevelBorder(0));
         head_Sin.setLocation(10,head.getHeight() + head_Lex.getHeight() + 350);
         plataforma.add(head_Sin);
 
@@ -92,7 +88,6 @@ public class AnalizatorTest extends JFrame {
         head_Sem.setSize(200,30);
         head_Sem.setForeground(Color.BLACK);
         head_Sem.setFont(new Font("Arial Black",Font.BOLD,16));
-        //head_Sin.setBorder(BorderFactory.createBevelBorder(0));
         head_Sem.setLocation(10,head.getHeight() + head_Lex.getHeight() + 500);
         plataforma.add(head_Sem);
     }
@@ -104,13 +99,10 @@ public class AnalizatorTest extends JFrame {
         scroll_tokens.setBackground(new Color(210, 224, 251));
         scroll_tokens.setLocation(input.getX() + 315,100);
 
-        //scroll_tokens.setViewportView(tabla);
-
         plataforma.add(scroll_tokens);
 
     }
     private void initAreas(){
-
         //Lexico
         input =  new JTextArea();
         input.setSize(250,280);
@@ -118,14 +110,6 @@ public class AnalizatorTest extends JFrame {
         input.setFont(new Font(Font.SANS_SERIF,input.getFont().getStyle(), 14));
         input.setLocation(10,100);
         input.setBorder(BorderFactory.createBevelBorder(0));
-
-        output_tokens =  new JTextArea();
-        output_tokens.setSize(250,280);
-        output_tokens.setEditable(false);
-        output_tokens.setFont(new Font(Font.SANS_SERIF,input.getFont().getStyle(), 12));
-        output_tokens.setLocation(input.getX() + 315,100);
-        output_tokens.setBackground(new Color(210, 224, 251));
-        output_tokens.setBorder(BorderFactory.createBevelBorder(0));
 
         //Sintactico
         output_Sin = new JTextArea();
@@ -163,7 +147,6 @@ public class AnalizatorTest extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                output_tokens.setText("");
                 output_Sem.setText("");
                 //Call method testInput
                 testInput();
@@ -270,22 +253,16 @@ public class AnalizatorTest extends JFrame {
                     }else{
                         output_Sem.setForeground(Color.BLUE);
                         output_Sem.append(STR."\{visitor.getSucess()}\n");
-
                     }
-
                 }
-
             }
         }catch (Exception e){
             e.printStackTrace();
-
         }
     }
 
     private void cleanElements(){
         input.setText("");
-
-        output_tokens.setText("");
 
         output_Sin.setForeground(Color.BLACK);
         output_Sin.setText("");
@@ -306,18 +283,14 @@ public class AnalizatorTest extends JFrame {
 
         // Crear el modelo de la tabla con las columnas pero sin datos
         DefaultTableModel modelo = new DefaultTableModel(columnTitles, 0);
-
         //Renderizar tabla
         DefaultTableCellRenderer render = new DefaultTableCellRenderer();
         render.setHorizontalAlignment(SwingConstants.CENTER);
 
-
         token.fill();
         for(int i =0; i<token.getTokens().size()-1;i++){
             int tipo = token.getTokens().get(i).getType();
-
             String tipo_name= "";
-
             switch (tipo){
                 case 1: tipo_name= "<INTEGER>";
                     break;
@@ -359,8 +332,6 @@ public class AnalizatorTest extends JFrame {
                     break;
                 default: tipo_name= "<NO_DEFINIDO>";
                     break;
-
-
             }
             String value = token.getTokens().get(i).getText();
 
@@ -368,8 +339,6 @@ public class AnalizatorTest extends JFrame {
             Vector aux = new Vector<>();
             aux.add(tipo_name);
             aux.add(value);
-
-            //output_tokens.append(STR."\{tipo_name} \t" + STR."\{value}\n");
             modelo.addRow(aux);
 
         }
