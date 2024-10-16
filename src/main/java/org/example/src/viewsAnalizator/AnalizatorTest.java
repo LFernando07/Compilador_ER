@@ -287,7 +287,7 @@ public class AnalizatorTest extends JFrame {
         DefaultTableCellRenderer render = new DefaultTableCellRenderer();
         render.setHorizontalAlignment(SwingConstants.CENTER);
 
-        token.fill();
+        token.fill(); //Desglozar la entrada a tokens
         for(int i =0; i<token.getTokens().size()-1;i++){
             int tipo = token.getTokens().get(i).getType();
             String tipo_name= "";
